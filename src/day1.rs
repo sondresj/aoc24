@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashMap,
     ops::{Mul, Sub},
 };
 
@@ -14,6 +14,12 @@ fn part1(mut left: Vec<i32>, mut right: Vec<i32>) -> i32 {
 }
 
 fn part2(left: Vec<i32>, right: Vec<i32>) -> i32 {
+    let mut r_counts = HashMap::with_capacity(right.len());
+
+    right.iter().for_each(|n| {
+        r_counts.entry(n).and_modify(|e| *e += 1).or_insert(0);
+    });
+
     left.iter()
         .map(|d| d.mul(right.iter().filter(|r| *r == d).count() as i32))
         .sum()
@@ -27,12 +33,8 @@ mod tests {
         PART1_INPUT
             .split('\n')
             .map(|l| {
-                let parts: Vec<i32> = l
-                    .split("   ")
-                    .map(|n| n.parse().expect("input mut be only integers"))
-                    .take(2)
-                    .collect();
-                (parts[0], parts[1])
+                let (a, b) = l.split_once("   ").unwrap();
+                (a.parse::<i32>().unwrap(), b.parse::<i32>().unwrap())
             })
             .unzip()
     }
