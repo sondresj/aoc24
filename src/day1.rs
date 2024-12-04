@@ -1,3 +1,8 @@
+#![allow(
+    clippy::unwrap_used,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap
+)]
 use std::{
     collections::HashMap,
     ops::{Mul, Sub},
@@ -8,17 +13,17 @@ fn part1(mut left: Vec<i32>, mut right: Vec<i32>) -> i32 {
         left.len() == right.len(),
         "left and right length are unequal"
     );
-    left.sort();
-    right.sort();
+    left.sort_unstable();
+    right.sort_unstable();
     left.iter().zip(right).map(|(l, r)| l.sub(r).abs()).sum()
 }
 
-fn part2(left: Vec<i32>, right: Vec<i32>) -> i32 {
+fn part2(left: &[i32], right: &[i32]) -> i32 {
     let mut r_counts = HashMap::with_capacity(right.len());
 
-    right.iter().for_each(|n| {
+    for n in right {
         r_counts.entry(n).and_modify(|e| *e += 1).or_insert(0);
-    });
+    }
 
     left.iter()
         .map(|d| d.mul(right.iter().filter(|r| *r == d).count() as i32))
@@ -53,14 +58,14 @@ mod tests {
 
     #[test]
     fn p2_example() {
-        let res = part2(vec![3, 4, 2, 1, 3, 3], vec![4, 3, 5, 3, 9, 3]);
+        let res = part2(&[3, 4, 2, 1, 3, 3], &[4, 3, 5, 3, 9, 3]);
         assert!(res == 31);
     }
 
     #[test]
     fn p2() {
         let (left, right) = get_input();
-        let res = part2(left, right);
+        let res = part2(&left, &right);
         println!("Res: {res}");
     }
 
